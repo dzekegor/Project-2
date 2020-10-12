@@ -21,7 +21,7 @@ python3 shell.py
    - `delfile <absolute path>`
    
      Deletes a file from a given directory
-   - `info <absolute path>'
+   - `info <absolute path>`
      
      Returns an information about given file
    - `cp <path-from> <path-to>`
