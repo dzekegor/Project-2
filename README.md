@@ -4,7 +4,7 @@
 ### Storage and naming server logic is implemented by Matvey Poltarykhin
 
 ## Distributed File System has the following architecture:
-![Alt Text](/home/mahler/2020-10-13%2007-52-00.PNG)
+![Image of Yaktocat](https://downloader.disk.yandex.ru/preview/7b610d55ff27bed0103bc16a9d7cff8733e8770e0a1dc55ac1498998e26cb425/5f856caf/Y9NQ2NpW1YBw1cjVlVNCKF6yyrwB1ybtL2ZG7Y5pTLgV14YrPdMQwnMIqTFrHs8IusMZ4PjHh0qlkUj90DwxLA==?uid=0&filename=2020-10-13+07-52-00.PNG&disposition=inline&hash=&limit=0&content_type=image%2Fpng&tknv=v2&owner_uid=219202647&size=2048x2048)
 
 ## How to use client application
 1. Start
