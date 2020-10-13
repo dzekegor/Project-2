@@ -20,23 +20,29 @@ storage_ips = sys.argv[1:]
 class StorageCommander:
     def __init__(self):
         self.sock = socket.socket()
-        self.ipstring = '34.66.53.161'
-        self.sock.connect(('34.66.53.161',5000))
-        for ip in storage_ips:
-            local_list = storage_ips.copy()
-            local_list.remove(ip)
-            siblings = ' '.join(local_list)
-            self.SendCommandToStorage('siblings '+siblings)
+        #self.ipstring = '34.66.53.161'
+        #self.sock.connect(('34.66.53.161',5000))
+        self.ipstring = storage_ips[0]
+        self.sock.connect((self.ipstring,5000))
+        self.TellStorageAboutSiblings()
 
     def ChoseServer(self):
         if not ping(self.ipstring, size=40, count=1)._responses[0].success:
-            print('ЧУЗЕНГ!!!')
             for ip in storage_ips:
                 if ping(ip, size=40, count=1)._responses[0].success:
-                    self.sock.close()
+                    del self.sock
+                    self.sock = socket.socket()
                     self.sock.connect((ip, 5000))
                     ipstring = ip
+                    self.TellStorageAboutSiblings()
                     return
+                
+    def TellStorageAboutSiblings(self):
+        local_list = storage_ips.copy()
+        local_list.remove(self.ipstring)cmd
+        siblings = ' '.join(local_list)
+        self.SendCommandToStorage('siblings '+siblings)
+        
 
     def SendCommandToStorage(self, command):
         bytes_to_send = command.encode()
