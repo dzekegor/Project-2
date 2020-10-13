@@ -100,7 +100,7 @@ class Node:
     def Remove(node):
         if node.children != None:
             for child in node.children:
-                Remove(child)
+                Node.Remove(child)
         else:
             storage.SendCommandToStorage('remove '+node.filename)
             #os.remove(node.filename)
@@ -127,7 +127,7 @@ class Node:
 
     def Init(self):
         for child in self.children:
-            if child.Remove()==0:
+            if Node.Remove(child)==0:
                 return 0
         return 1
 
