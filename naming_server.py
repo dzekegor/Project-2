@@ -108,7 +108,8 @@ class Node:
                     return True
         return False
 
-    def Remove(self, node):
+    @staticmethod
+    def Remove(node):
         if not self.isFile and self.isLock() or self.lock:
             return 0
         if node.children != None:
@@ -183,9 +184,9 @@ class Node:
         info = ''
         for child in self.children:
             if child.isFile:
-                info.append(child.name+'(f)   ')
+                info+=child.name+'(f)   '
             else:
-                info.append(child.name+'(d)   ')
+                info+=child.name+'(d)   '
         return info
 
     def OpenFile(self):
@@ -232,7 +233,9 @@ class ClientListener(Thread):
     def run(self):
         while True:
             self.root.SaveNode()
-            data = self.ReadData().split()
+            data = self.ReadData()
+            print(data)
+            data = data.split()
             command = data[0]
             print(command)
             if command=='mkfile':
@@ -379,7 +382,7 @@ class ClientListener(Thread):
                 file_node = directory.FindFile(file_name)
                 if file_node!=None:
                     self.SendData(file_name)
-                    file_node.Remove()
+                    Node.Remove(file_node)
                 else:
                     self.Error()
                 continue
@@ -388,7 +391,7 @@ class ClientListener(Thread):
                 path = data[1]
                 directory = self.root.FindPath(path.split('/')[1:])
                 if directory!=None:
-                    directory.Remove()
+                    Node.Remove(directory)
                     self.SendData(os.path.basename(path))
                 else:
                     self.Error()
