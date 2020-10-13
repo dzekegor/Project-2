@@ -88,9 +88,6 @@ class ClientListener(Thread):
                 SendData(os.path.getsize(command[1]))
 
 
-def AddFile(path, name):
-
-
 def main():
     next_name = 1
 
