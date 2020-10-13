@@ -28,20 +28,20 @@ class Replicator:
         if not self.isPrimary:
             return
         for sock in self.sockets:
-            self.SendCommand('sendfile '+name)
+            self.SendCommand(sock, 'sendfile '+name)
             self.SendFile(sock, name)
             
     def ReplicateEmpty(self, name):
         if not self.isPrimary:
             return
         for sock in self.sockets:
-            self.SendCommand('sendfilempty '+name)
+            self.SendCommand(sock, 'sendfilempty '+name)
             
     def Remove(self, name):
         if not self.isPrimary:
             return
         for sock in self.sockets:
-            self.SendCommand('remove '+name)
+            self.SendCommand(sock, 'remove '+name)
             
     def SendFile(self, sock, name):
         bytes_to_send = open(name,'rb').read()
