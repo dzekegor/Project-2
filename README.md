@@ -1,4 +1,10 @@
-# Project-2
+# Distributed Systems Project-2 by Matvey Poltarykhin (BS18-SE-01) and Egor Gubanov (BS18-DS-01)
+
+### Client(shell.py) is written by Egor Gubanov
+### Storage and naming server logic is implemented by Matvey Poltarykhin
+
+## Distributed File System has the following architecture:
+![Alt Text](https://yadi.sk/i/7fGOe3qRtEJHhg)
 
 ## How to use client application
 1. Start
