@@ -88,7 +88,7 @@ class ClientListener(Thread):
                 os.remove(command[1])
 
             if command[0]=='size':
-                self.SendData(os.path.getsize(command[1]))
+                self.SendData(str(os.path.getsize(command[1])))
 
 
 def main():
