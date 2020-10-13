@@ -39,7 +39,7 @@ class StorageCommander:
                 
     def TellStorageAboutSiblings(self):
         local_list = storage_ips.copy()
-        local_list.remove(self.ipstring)cmd
+        local_list.remove(self.ipstring)
         siblings = ' '.join(local_list)
         self.SendCommandToStorage('siblings '+siblings)
         
