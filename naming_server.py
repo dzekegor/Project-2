@@ -29,7 +29,7 @@ class StorageCommander:
             self.SendCommandToStorage('siblings '+siblings)
 
     def ChoseServer(self):
-        if not ping(ipstring, size=40, count=1)._responses[0].success:
+        if not ping(self.ipstring, size=40, count=1)._responses[0].success:
             print('ЧУЗЕНГ!!!')
             for ip in storage_ips:
                 if ping(ip, size=40, count=1)._responses[0].success:
@@ -234,6 +234,7 @@ class ClientListener(Thread):
             self.root.SaveNode()
             data = self.ReadData()
             command = data[0]
+            print(command)
             if command=='mkfile':
                 path = data[1]
                 directory_path = os.path.dirname(path)
@@ -248,12 +249,18 @@ class ClientListener(Thread):
 
             if command=='mkdir':
                 path = data[1]
+                print('here0')
                 parent_path = os.path.dirname(path)
+                print('here1')
                 name = os.path.basename(path)
+                print('here2')
                 directory = self.root.FindPath(parent_path.split('/')[1:])
                 if directory!=None:
+                    print('here3')
                     directory.AddDirectory(name)
+                    print('here4')
                     self.SendData(name)
+                    print('here5')
                 else:
                     self.Error()
                 continue
