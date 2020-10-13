@@ -4,7 +4,7 @@
 ### Storage and naming server logic is implemented by Matvey Poltarykhin
 
 ## Distributed File System has the following architecture:
-![Image of Yaktocat](https://downloader.disk.yandex.ru/preview/7b610d55ff27bed0103bc16a9d7cff8733e8770e0a1dc55ac1498998e26cb425/5f856caf/Y9NQ2NpW1YBw1cjVlVNCKF6yyrwB1ybtL2ZG7Y5pTLgV14YrPdMQwnMIqTFrHs8IusMZ4PjHh0qlkUj90DwxLA==?uid=0&filename=2020-10-13+07-52-00.PNG&disposition=inline&hash=&limit=0&content_type=image%2Fpng&tknv=v2&owner_uid=219202647&size=2048x2048)
+![Architecture Scheme](https://image.hosting/image/qH3U)
 
 ## How to use client application
 1. Start
@@ -12,39 +12,38 @@
 python3 shell.py
 ```
 2. Commands
+   Clear root directory
    - `$ init`
-     
-     Deletes everything from root directory
-   - `$ mkfile <absolute path>`
-     
-     Creates an empty file in the given directory
-   - `$ cat <absolute path>`
    
-     Reads a file in the given directory
-   - `send <absolute local path> <absolute remote path>`
+   Create empty file
+   - `$ mkfile <path>`
      
-     Sends a file from host to server
-   - `delfile <absolute path>`
+   Show file content
+   - `$ cat <path>`
    
-     Deletes a file from a given directory
+   Send file from local machine to remote file system
+   - `send <path> <absolute remote path>`
+     
+   Delete file
+   - `delfile <path>`
+   
+   Show file info
    - `info <absolute path>`
      
-     Returns an information about given file
+   Copy file
    - `cp <path-from> <path-to>`
      
-     Copies a file from given path to the given path
-   - `mv <path-from> <path-to>`
+   Move file
+   - `mv <path-from/file> <path-to>`
      
-     Moves a file from given path to the given path
+   Go to directory
    - `cd <path>`
      
-     Opens the given directory
+   Show files and directories list
    - `ls <path>`
      
-     Reads the given directory
-   - `mkdir <absolute path>`
+   Create empty directory
+   - `mkdir <path>`
      
-     Creates a directory
-   - `deldir <absolute path>`
-     
-     Deletes a directory
+   Remove directory
+   - `deldir <path>`
