@@ -309,9 +309,10 @@ class ClientListener(Thread):
 
             if command=='cp':
                 args = data[1:]
+                path = args[0]
                 directory_path = os.path.dirname(path[0])
                 file_name = os.path.basename(path[0])
-                target_directory = path.arg[1]
+                target_directory = args[1]
                 from_node = self.root.FindPath(directory_path.split('/')[1:])
                 if from_node!=None:
                     file_node = from_node.FindFile(file_name)
@@ -325,9 +326,10 @@ class ClientListener(Thread):
 
             if command=='mv':
                 args = data[1:]
+                path = args[0]
                 directory_path = os.path.dirname(path[0])
                 file_name = os.path.basename(path[0])
-                target_directory = path.arg[1]
+                target_directory = args[1]
                 from_node = self.root.FindPath(directory_path.split('/')[1:])
                 if from_node!=None:
                     file_node = from_node.FindFile(file_name)
