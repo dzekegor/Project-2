@@ -1,6 +1,6 @@
 import socket
 import os
-#import sys
+import sys
 from pythonping import ping
 from threading import Thread
 import os.path
@@ -22,15 +22,47 @@ class StorageCommander:
         self.sock = socket.socket()
         self.ipstring = '34.66.53.161'
         self.sock.connect(('34.66.53.161',5000))
+        for ip in storage_ips:
+            local_list = storage_ips.copy()
+            local_list.remove(ip)
+            siblings = ' '.join(local_list)
+            self.SendCommandToStorage('siblings '+siblings)
 
     def ChoseServer(self):
         if not ping(ipstring, size=40, count=1)._responses[0].success:
+            print('ЧУЗЕНГ!!!')
             for ip in storage_ips:
                 if ping(ip, size=40, count=1)._responses[0].success:
                     self.sock.close()
                     self.sock.connect((ip, 5000))
                     ipstring = ip
                     return
+
+    def SendCommandToStorage(self, command):
+        bytes_to_send = command.encode()
+        self.sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
+        self.sock.send(bytes_to_send)
+
+    def SendBytesToStorage(self, bytes_to_send):
+        self.sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
+        self.sock.send(bytes_to_send)
+
+    def SendFileToStorage(self, name, content):
+        if content==None:
+            self.SendCommandToStorage('sendfilempty '+name)
+        else:
+            self.SendCommandToStorage('sendfile '+name)
+            self.SendBytesToStorage(content)
+
+    def GetFile(self, name):
+        self.SendCommandToStorage('getfile '+name)
+        size = int.from_bytes(self.sock.recv(4), "big")
+        return self.sock.recv(size)
+
+    def GetSize(self, name):
+        self.SendCommandToStorage('size '+name)
+        size = int.from_bytes(self.sock.recv(4), "big")
+        return self.sock.recv(size).decode()
 
 storage = StorageCommander()
 
@@ -48,7 +80,7 @@ class Node:
         if isFile:
             self.filename = hashlib.sha256(str(time()).encode()).hexdigest()
             self.children = None
-            SendFileToStorage(self.filename, file_content)
+            storage.SendFileToStorage(self.filename, file_content)
             #open(self.filename, 'a').close()
         else:
             self.filename = None
@@ -83,7 +115,7 @@ class Node:
             for child in node.children:
                 Remove(child)
         else:
-            SendCommandToStorage('remove '+node.filename)
+            storage.SendCommandToStorage('remove '+node.filename)
             #os.remove(node.filename)
         node.parent.children.remove(node)
         node.parent = None
@@ -126,7 +158,11 @@ class Node:
         return None
 
     def SaveNode(self):
-        pickle.dump(self, open('simple1.pkl', 'wb'))
+        pickle.dump(self, open('root.pkl', 'wb'))
+
+    @staticmethod
+    def LoadNode():
+        return pickle.load(open('root.pkl','rb'))
 
     def FindPath(self, path):
         if len(path)>1:
@@ -153,7 +189,7 @@ class Node:
         return info
 
     def OpenFile(self):
-        return GetFile(self.filename)
+        return storage.GetFile(self.filename)
 
     def GetPath(self):
         if(self.name == '/'):
@@ -162,31 +198,7 @@ class Node:
 
 
 
-def SendCommandToStorage(command):
-    bytes_to_send = command.encode()
-    storage.sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
-    storage.sock.send(bytes_to_send)
 
-def SendBytesToStorage(bytes_to_send):
-    storage.sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
-    storage.sock.send(bytes_to_send)
-
-def SendFileToStorage(name, content):
-    if content==None:
-        SendCommandToStorage('sendfilempty '+name)
-    else:
-        SendCommandToStorage('sendfile '+name)
-        SendBytesToStorage(content)
-
-def GetFile(name):
-    SendCommandToStorage('getfile '+name)
-    size = int.from_bytes(storage.sock.recv(4), "big")
-    return storage.sock.recv(size)
-
-def GetSize(name):
-    SendCommandToStorage('size '+name)
-    size = int.from_bytes(storage.sock.recv(4), "big")
-    return storage.sock.recv(size).decode()
 
 # Thread to listen one particular client
 class ClientListener(Thread):
@@ -219,6 +231,7 @@ class ClientListener(Thread):
 
     def run(self):
         while True:
+            self.root.SaveNode()
             data = self.ReadData()
             command = data[0]
             if command=='mkfile':
@@ -342,7 +355,7 @@ class ClientListener(Thread):
                 if file_node!=None:
                     self.SendData('Full Path: '+os.path.splitext(path)[0]+
                         '\nExtention: '+os.path.splitext(path)[1]+
-                        '\nSize(bytes): '+GetSize(file_node.filename)+
+                        '\nSize(bytes): '+storage.GetSize(file_node.filename)+
                         '\nContent file name: '+file_node.filename)
                 else:
                     self.Error()
@@ -375,9 +388,10 @@ class ClientListener(Thread):
                 continue
 
 def main():
-    print('root')
-    root = Node.Root()
-    print('rooted')
+    if os.path.exists('root.pkl'):
+        root = Node.LoadNode()
+    else:
+        root = Node.Root()
     next_name = 1
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
