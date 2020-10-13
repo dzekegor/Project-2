@@ -129,6 +129,7 @@ class Node:
         for child in self.children:
             if Node.Remove(child)==0:
                 return 0
+        os.remove('root.pkl')
         return 1
 
     def FindDirectory(self, name):
