@@ -13,10 +13,10 @@ lastfilename = ""
 
 class Replicator:
     def __init__(self):
-        self.isPrimary = false
+        self.isPrimary = False
     
     def SetSiblings(self, siblings):
-        self.isPrimary = true
+        self.isPrimary = True
         self.sibling_ips = siblings
         self.sockets = []
         for ip in siblings:
