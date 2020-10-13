@@ -232,7 +232,7 @@ class ClientListener(Thread):
     def run(self):
         while True:
             self.root.SaveNode()
-            data = self.ReadData()
+            data = self.ReadData().split()
             command = data[0]
             print(command)
             if command=='mkfile':
