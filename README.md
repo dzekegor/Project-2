@@ -4,7 +4,7 @@
 ### Storage and naming server logic is implemented by Matvey Poltarykhin
 
 ## Distributed File System has the following architecture:
-![Alt Text](https://yadi.sk/i/7fGOe3qRtEJHhg)
+![Alt Text](/home/mahler/2020-10-13%2007-52-00.PNG)
 
 ## How to use client application
 1. Start
