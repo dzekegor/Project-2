@@ -6,6 +6,9 @@
 ## Distributed File System has the following architecture:
 ![Architecture Scheme](https://lux.loli.net/2020/10/13/2020-10-13-07-52-00240ac1e846cfb221.png)
 
+## Fault Tolerance:
+![Architecture Scheme](https://lux.loli.net/2020/10/13/image_2020-10-13_233531f29ff982c98cc0eb.png)
+
 ## How to use client application
 1. Start
 ```
