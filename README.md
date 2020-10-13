@@ -50,3 +50,14 @@ python3 shell.py
      
    Remove directory
    - `deldir <path>`
+
+## How to run name server
+
+```
+python3 name_server.py <storage ip0> <storage ip1> ... <storage ip-n>
+```
+
+Example:
+```
+python3 name_server.py 34.66.53.161 34.122.255.32 34.68.136.135
+```
