@@ -76,7 +76,6 @@ class Node:
         self.parent = parent;
         self.isFile = isFile
         #self.fullpath = self.GetPath() + name
-        self.lock = False
         if isFile:
             self.filename = hashlib.sha256(str(time()).encode()).hexdigest()
             self.children = None
@@ -92,26 +91,13 @@ class Node:
         #self.fullpath = self.GetPath() + newname
 
     def Move(self, move_to_node):
-        if not self.isFile and self.isLock() or self.lock:
-            return 0
         move_to_node.children.append(self)
         self.parent.children.remove(self)
         self.parent = move_to_node
         return 1
 
-    def isLock(self):
-        if isFile:
-            return self.lock
-        else:
-            for child in self.children:
-                if child.lock:
-                    return True
-        return False
-
     @staticmethod
     def Remove(node):
-        if not self.isFile and self.isLock() or self.lock:
-            return 0
         if node.children != None:
             for child in node.children:
                 Remove(child)
