@@ -44,8 +44,14 @@ class StorageCommander:
         self.sock.send(bytes_to_send)
 
     def SendBytesToStorage(self, bytes_to_send):
-        self.sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
-        self.sock.send(bytes_to_send)
+        count = len(bytes_to_send)//1024
+        rem = len(bytes_to_send)%1024
+        if rem >0:
+            count+=1
+        self.sock.send(count.to_bytes(4,byteorder="big"))
+        self.sock.send(rem.to_bytes(4,byteorder="big"))
+        for i in range(count):
+            self.sock.send(bytes_to_send[1024*i:1024*(i+1)])
 
     def SendFileToStorage(self, name, content):
         if content==None:
@@ -207,8 +213,19 @@ class ClientListener(Thread):
         return self.sock.recv(size).decode()
 
     def ReadBytes(self):
-        size = int.from_bytes(self.sock.recv(4), "big")
-        return self.sock.recv(size)
+        count = int.from_bytes(self.sock.recv(4), "big")
+        last_size = int.from_bytes(self.sock.recv(4), "big")
+        result = b''
+        for i in range(count):
+            if i==count-1:
+                if last_size==0:
+                    result+=self.sock.recv(1024)
+                else:
+                    result+=self.sock.recv(last_size)
+            else:
+                result+=self.sock.recv(1024)
+        print(result)
+        return result
 
     def SendData(self, data_string):
         self.sock.send(len(data_string).to_bytes(4, byteorder='big'))
@@ -228,7 +245,6 @@ class ClientListener(Thread):
             print(data)
             data = data.split()
             command = data[0]
-            print(command)
             if command=='mkfile':
                 path = data[1]
                 directory_path = os.path.dirname(path)
@@ -243,18 +259,12 @@ class ClientListener(Thread):
 
             if command=='mkdir':
                 path = data[1]
-                print('here0')
                 parent_path = os.path.dirname(path)
-                print('here1')
                 name = os.path.basename(path)
-                print('here2')
                 directory = self.root.FindPath(parent_path.split('/')[1:])
                 if directory!=None:
-                    print('here3')
                     directory.AddDirectory(name)
-                    print('here4')
                     self.SendData(name)
-                    print('here5')
                 else:
                     self.Error()
                 continue

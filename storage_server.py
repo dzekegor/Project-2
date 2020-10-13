@@ -36,8 +36,19 @@ class ClientListener(Thread):
         self.sock.send(data_string.encode())
 
     def ReadBytes(self):
-        size = int.from_bytes(self.sock.recv(4), "big")
-        return self.sock.recv(size)
+        count = int.from_bytes(self.sock.recv(4), "big")
+        last_size = int.from_bytes(self.sock.recv(4), "big")
+        result = b''
+        for i in range(count):
+            if i==count-1:
+                if last_size==0:
+                    result+=self.sock.recv(1024)
+                else:
+                    result+=self.sock.recv(last_size)
+            else:
+                result+=self.sock.recv(1024)
+        print(result)
+        return result
 
     def SendFile(self, name):
         file_content = open(name,'rb').read()
