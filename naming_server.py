@@ -213,6 +213,10 @@ class ClientListener(Thread):
         self.sock.send(len(data_string).to_bytes(4, byteorder='big'))
         self.sock.send(data_string.encode())
 
+    def SendBytes(self, data):
+        self.sock.send(len(data).to_bytes(4, byteorder='big'))
+        self.sock.send(data)
+
     def Error(self):
         self.SendData('Error')
 
