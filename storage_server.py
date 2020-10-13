@@ -17,25 +17,6 @@ class ClientListener(Thread):
         super().__init__(daemon=True)
         self.sock = sock
         self.name = name
-
-    # add 'me> ' to sended message
-    def _clear_echo(self, data):
-        # \033[F – symbol to move the cursor at the beginning of current line (Ctrl+A)
-        # \033[K – symbol to clear everything till the end of current line (Ctrl+K)
-        self.sock.sendall('\033[F\033[K'.encode())
-        data = 'me> '.encode() + data
-        # send the message back to user
-        self.sock.sendall(data)
-
-    # broadcast the message with name prefix eg: 'u1> '
-    def _broadcast(self, data):
-        data = (self.name + '> ').encode() + data
-        for u in clients:
-            # send to everyone except current client
-            if u == self.sock:
-                continue
-            u.sendall(data)
-
     # clean up
     def _close(self):
         #print("HERE")
@@ -71,7 +52,8 @@ class ClientListener(Thread):
     def run(self):
         while True:
             command = self.ReadData()
-            command = command.split()
+            pritn(command)
+            command = command.Split()
             if command[0]=='getfile':
                 SendFile(command[1])
 
@@ -90,14 +72,11 @@ class ClientListener(Thread):
 
 def main():
     next_name = 1
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    sock.bind(('', 5000))
+    sock.bind(('', 8080))
     sock.listen()
-    
+
     while True:
         con, addr = sock.accept()
         clients.append(con)
