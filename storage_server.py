@@ -24,26 +24,26 @@ class Replicator:
             s.connect((ip, 5000))
             self.sockets.append(s)
             
-     def Replicate(self, name):
+    def Replicate(self, name):
         if not self.isPrimary:
             return
         for sock in self.sockets:
             self.SendCommand('sendfile '+name)
             self.SendFile(sock, name)
             
-     def ReplicateEmpty(self, name):
+    def ReplicateEmpty(self, name):
         if not self.isPrimary:
             return
         for sock in self.sockets:
             self.SendCommand('sendfilempty '+name)
             
-     def Remove(self, name):
+    def Remove(self, name):
         if not self.isPrimary:
             return
         for sock in self.sockets:
             self.SendCommand('remove '+name)
             
-     def SendFile(self, sock, name):
+    def SendFile(self, sock, name):
         bytes_to_send = open(name,'rb').read()
         count = len(bytes_to_send)//1024
         rem = len(bytes_to_send)%1024
@@ -54,7 +54,7 @@ class Replicator:
         for i in range(count):
             sock.send(bytes_to_send[1024*i:1024*(i+1)])
       
-     def SendCommand(self, sock, command):
+    def SendCommand(self, sock, command):
         bytes_to_send = command.encode()
         sock.send((len(bytes_to_send)).to_bytes(4,byteorder="big"))
         sock.send(bytes_to_send)
