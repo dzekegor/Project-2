@@ -11,6 +11,8 @@ clients = []
 files = {}
 lastfilename = ""
 
+sibling_ips = []
+
 # Thread to listen one particular client
 class ClientListener(Thread):
     def __init__(self, name: str, sock: socket.socket):
@@ -52,8 +54,10 @@ class ClientListener(Thread):
     def run(self):
         while True:
             command = self.ReadData()
-            pritn(command)
-            command = command.Split()
+            command = command.split()
+            if command[0]=='siblings':
+                sibling_ips = command[1:]
+
             if command[0]=='getfile':
                 SendFile(command[1])
 
