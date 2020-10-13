@@ -51,9 +51,15 @@ class ClientListener(Thread):
         return result
 
     def SendFile(self, name):
-        file_content = open(name,'rb').read()
-        self.sock.send(len(file_content).to_bytes(4, byteorder='big'))
-        self.sock.send(file_content)
+        bytes_to_send = open(name,'rb').read()
+        count = len(bytes_to_send)//1024
+        rem = len(bytes_to_send)%1024
+        if rem >0:
+            count+=1
+        self.sock.send(count.to_bytes(4,byteorder="big"))
+        self.sock.send(rem.to_bytes(4,byteorder="big"))
+        for i in range(count):
+            self.sock.send(bytes_to_send[1024*i:1024*(i+1)])
 
     def GetFile(self, name, content):
         size = int.from_bytes(self.sock.recv(4), "big")

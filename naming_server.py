@@ -62,8 +62,19 @@ class StorageCommander:
 
     def GetFile(self, name):
         self.SendCommandToStorage('getfile '+name)
-        size = int.from_bytes(self.sock.recv(4), "big")
-        return self.sock.recv(size)
+        count = int.from_bytes(self.sock.recv(4), "big")
+        last_size = int.from_bytes(self.sock.recv(4), "big")
+        result = b''
+        for i in range(count):
+            if i==count-1:
+                if last_size==0:
+                    result+=self.sock.recv(1024)
+                else:
+                    result+=self.sock.recv(last_size)
+            else:
+                result+=self.sock.recv(1024)
+        print(result)
+        return result
 
     def GetSize(self, name):
         self.SendCommandToStorage('size '+name)
@@ -231,9 +242,15 @@ class ClientListener(Thread):
         self.sock.send(len(data_string).to_bytes(4, byteorder='big'))
         self.sock.send(data_string.encode())
 
-    def SendBytes(self, data):
-        self.sock.send(len(data).to_bytes(4, byteorder='big'))
-        self.sock.send(data)
+    def SendBytes(self, bytes_to_send):
+        count = len(bytes_to_send)//1024
+        rem = len(bytes_to_send)%1024
+        if rem >0:
+            count+=1
+        self.sock.send(count.to_bytes(4,byteorder="big"))
+        self.sock.send(rem.to_bytes(4,byteorder="big"))
+        for i in range(count):
+            self.sock.send(bytes_to_send[1024*i:1024*(i+1)])
 
     def Error(self):
         self.SendData('Error')
