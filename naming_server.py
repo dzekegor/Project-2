@@ -292,7 +292,7 @@ class ClientListener(Thread):
                     continue
                 file_node = directory.FindFile(file_name)
                 if file_node!=None:
-                    self.SendData(file_node.OpenFile())
+                    self.SendBytes(file_node.OpenFile())
                 else:
                     self.Error()
                 continue
