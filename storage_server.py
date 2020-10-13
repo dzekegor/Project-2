@@ -59,7 +59,7 @@ class ClientListener(Thread):
                 sibling_ips = command[1:]
 
             if command[0]=='getfile':
-                SendFile(command[1])
+                self.SendFile(command[1])
 
             if command[0]=='sendfile':
                 open(command[1],'wb').write(self.ReadBytes())
@@ -71,14 +71,14 @@ class ClientListener(Thread):
                 os.remove(command[1])
 
             if command[0]=='size':
-                SendData(os.path.getsize(command[1]))
+                self.SendData(os.path.getsize(command[1]))
 
 
 def main():
     next_name = 1
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(('', 8080))
+    sock.bind(('', 5000))
     sock.listen()
 
     while True:
