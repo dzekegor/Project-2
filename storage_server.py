@@ -71,7 +71,7 @@ class ClientListener(Thread):
     def run(self):
         while True:
             command = self.ReadData()
-            command = command.Split()
+            command = command.split()
             if command[0]=='getfile':
                 SendFile(command[1])
 
@@ -95,7 +95,7 @@ def main():
 
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    sock.bind(('', 8080))
+    sock.bind(('', 5000))
     sock.listen()
     
     while True:
